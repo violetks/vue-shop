@@ -1,24 +1,17 @@
-# vue-shop
+# vue-shop——一个电商后台管理系统
 
-## Project setup
-```
-npm install
-```
+## 前端技术栈：
+- Vue
+- Vue-router
+- Element-UI
+- Axios
+- ECharts
 
-### Compiles and hot-reloads for development
+## 后端技术栈：
+- Node.js
+- Mock.js
+
+## 项目运行
 ```
 npm run serve
 ```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

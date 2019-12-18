@@ -71,7 +71,7 @@ export default {
         const { data: res } = await this.$http.post('/login', this.loginForm) // 解构赋值
         // console.log(res); // res里面有token
         if (res.meta.status !== 200) return this.$message.error('登录失败！')
-        this.$message.success('登录成功！')
+        this.$message.success(res.meta.msg)
         // 1. 将登录成功之后的 token，保存到客户端的 sessionStorage 中
         //   1.1 项目中除了登录之外的其他API接口，必须在登录之后才能访问
         //   1.2 token只在当前网站打开期间生效，所以将 token 保存在 sessionStorage 中

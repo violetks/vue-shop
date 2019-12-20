@@ -15,3 +15,5 @@
 ```
 npm run serve
 ```
+
+## 模块功能详见Wiki

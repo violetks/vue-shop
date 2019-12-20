@@ -19,6 +19,7 @@
           router
           background-color="#079992"
           text-color="#fff"
+          :default-active="activePath"
           active-text-color="#409EFF"
           unique-opened
           :collapse="isCollapse"
@@ -35,6 +36,7 @@
               :index="'/'+subItem.path"
               v-for="subItem in item.children"
               :key="subItem.id"
+              @click="saveNavState('/'+subItem.path)"
             >
               <template slot="title">
                 <i class="el-icon-menu"></i>
@@ -56,21 +58,21 @@
 export default {
   data() {
     return {
-      // 左侧菜单数据
-      menulist: [],
+      menulist: [], // 左侧菜单数据
       iconList: {
-        '101': 'iconfont icon-user',
-        '102': 'iconfont icon-tijikongjian',
-        '103': 'iconfont icon-shangpin',
-        '104': 'iconfont icon-danju',
-        '105': 'iconfont icon-baobiao'
+        '125': 'iconfont icon-user',
+        '103': 'iconfont icon-tijikongjian',
+        '101': 'iconfont icon-shangpin',
+        '102': 'iconfont icon-danju',
+        '145': 'iconfont icon-baobiao'
       },
-      // 是否折叠
-      isCollapse: false
+      isCollapse: false, // 是否折叠
+      activePath: '' // 被激活的链接地址
     }
   },
   created() {
     this.getMenuList()
+    this.activePath = window.sessionStorage.getItem('activePath')
   },
   methods: {
     quit() {
@@ -80,23 +82,18 @@ export default {
     // 获取所有的菜单
     async getMenuList() {
       const { data: res } = await this.$http.get('/menus')
-      // var ress = JSON.parse(JSON.stringify(res.data))
-      console.log(res)
-      if (res.meta.status !== 200) {
+      if (res.meta.status !== 200)
         return this.$message.error('获取菜单列表失败！')
-      } else {
-        // let arr = res.data.data
-        // let newArr = arr.map(element => {
-        //   return JSON.parse(JSON.stringify(element))
-        // })
-        // console.log('newArr:' + newArr)
-        this.menulist = res.data
-        console.log('menulist:' + this.menulist)
-      }
+      this.menulist = res.data
     },
     // 点击按钮，折叠侧边菜单栏
     toggleCollapse() {
       this.isCollapse = !this.isCollapse
+    },
+    // 保存链接的激活状态
+    saveNavState(activePath) {
+      window.sessionStorage.setItem('activePath', activePath)
+      this.activePath = activePath
     }
   }
 }
@@ -127,7 +124,7 @@ export default {
 }
 
 .el-aside {
-  background-color: #e3edcd;
+  background-color: #2d3a4b;
 }
 
 .el-aside .el-menu {

@@ -1,12 +1,17 @@
 <template>
   <div class="login_container">
-    <div class="center_box">
-      <h1>电商后台管理系统</h1>
+    <div>
       <div class="login_box">
+        <!-- 标题区域 -->
+        <div class="title-container">
+          <h1>电商后台管理系统</h1>
+        </div>
+
         <!-- Logo区域 -->
         <div class="avatar_box">
           <img src="../assets/logo.png" alt />
         </div>
+
         <!-- 登录表单区域 -->
         <el-form
           ref="loginFormRef"
@@ -17,15 +22,29 @@
         >
           <!-- 用户名 -->
           <el-form-item prop="username">
-            <el-input v-model="loginForm.username" prefix-icon="iconfont icon-user"></el-input>
+            <el-input
+              type="text"
+              tabindex="1"
+              v-model="loginForm.username"
+              prefix-icon="iconfont icon-user"
+              placeholder="Username"
+            ></el-input>
           </el-form-item>
           <!-- 密码 -->
           <el-form-item prop="password">
             <el-input
+              ref="password"
               v-model="loginForm.password"
               prefix-icon="iconfont icon-3702mima"
-              type="password"
-            ></el-input>
+              :key="passwordType"
+              :type="passwordType"
+              placeholder="Password"
+              tabindex="2"
+            >
+              <span class="show-pwd" @click="showPwd" slot="append">
+                <i :class="passwordType === 'password' ? 'el-icon-arrow-down' : 'el-icon-view'"></i>
+              </span>
+            </el-input>
           </el-form-item>
           <!-- 按钮 -->
           <el-form-item class="btns">
@@ -42,9 +61,10 @@
 export default {
   data() {
     return {
+      passwordType: 'password', // 密码可见
       loginForm: {
         username: 'admin',
-        password: 'xl123456'
+        password: '123456'
       },
       // 表单的验证规则对象
       loginFormRules: {
@@ -60,6 +80,14 @@ export default {
     }
   },
   methods: {
+    // 密码隐藏与显示
+    showPwd() {
+      if (this.passwordType === 'password') {
+        this.passwordType = ''
+      } else {
+        this.passwordType = 'password'
+      }
+    },
     // 点击重置按钮，重置表单
     resetLoginForm() {
       this.$refs.loginFormRef.resetFields()
@@ -68,7 +96,7 @@ export default {
       this.$refs.loginFormRef.validate(async valid => {
         // valid验证结果：true/false
         if (!valid) return
-        const { data: res } = await this.$http.post('/login', this.loginForm) // 解构赋值
+        const { data: res } = await this.$http.post('login', this.loginForm) // 解构赋值
         // console.log(res); // res里面有token
         if (res.meta.status !== 200) return this.$message.error('登录失败！')
         this.$message.success(res.meta.msg)
@@ -77,7 +105,7 @@ export default {
         //   1.2 token只在当前网站打开期间生效，所以将 token 保存在 sessionStorage 中
         // 2. 通过编程式导航跳转到后台主页，路由地址是 /home
         window.sessionStorage.setItem('token', res.data.token)
-        this.$router.push({ path: '/home' })
+        this.$router.push('/home')
       })
     }
   }
@@ -86,36 +114,45 @@ export default {
 
 <style scoped>
 .login_container {
-  height: 100%;
-  background-color: #c7edcc;
-}
-
-.center_box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.center_box h1 {
-  top: 10px;
-  font-family: '微软雅黑';
-  color: #606266;
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  background-color: #2d3a4b;
 }
 
 .login_box {
-  width: 450px;
-  height: 300px;
-  background-color: #fff;
-  border-radius: 3px;
   position: absolute;
-  left: 50%;
+  width: 520px;
+  max-width: 100%;
+  padding: 0 35px;
   top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
 }
 
+/* 标题区域 */
+.title-container {
+  position: relative;
+}
+
+.title-container h1 {
+  color: #eee;
+  text-align: center;
+  margin: 0 auto 60px auto;
+}
+
+/* 表单区域 */
+.login_form {
+  bottom: 0;
+  background-color: rgba(250, 242, 242, 0.8);
+  padding: 70px 20px 5px 20px;
+  box-sizing: border-box;
+  border-radius: 3px;
+}
+
 .avatar_box {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   padding: 10px;
   border-radius: 50%;
   border: 1px solid #eee;
@@ -136,13 +173,5 @@ export default {
 .btns {
   display: flex;
   justify-content: flex-end;
-}
-
-.login_form {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 0 20px;
-  box-sizing: border-box;
 }
 </style>

@@ -9,7 +9,11 @@
 
 ## 后端技术栈：
 - Node.js
-- Mock.js
+- Mock.js（前期模拟接口数据）
+- Express
+- JWT（模拟session）
+- MySQL
+- Sequelize（操作数据库的框架）
 
 ## 项目运行
 ```

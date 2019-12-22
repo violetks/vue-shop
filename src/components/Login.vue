@@ -33,17 +33,12 @@
           <!-- 密码 -->
           <el-form-item prop="password">
             <el-input
-              ref="password"
+              tabindex="2"
               v-model="loginForm.password"
               prefix-icon="iconfont icon-3702mima"
-              :key="passwordType"
-              :type="passwordType"
               placeholder="Password"
-              tabindex="2"
+              show-password
             >
-              <span class="show-pwd" @click="showPwd" slot="append">
-                <i :class="passwordType === 'password' ? 'el-icon-arrow-down' : 'el-icon-view'"></i>
-              </span>
             </el-input>
           </el-form-item>
           <!-- 按钮 -->
@@ -61,7 +56,6 @@
 export default {
   data() {
     return {
-      passwordType: 'password', // 密码可见
       loginForm: {
         username: 'admin',
         password: '123456'
@@ -80,14 +74,6 @@ export default {
     }
   },
   methods: {
-    // 密码隐藏与显示
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-    },
     // 点击重置按钮，重置表单
     resetLoginForm() {
       this.$refs.loginFormRef.resetFields()

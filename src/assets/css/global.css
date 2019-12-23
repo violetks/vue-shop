@@ -16,6 +16,7 @@ html,body, #app {
 }
 
 .el-main {
+    text-align: left !important;
     line-height: 0 !important;
 }
 

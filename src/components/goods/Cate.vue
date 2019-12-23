@@ -11,7 +11,7 @@
     <el-card>
       <!-- 添加分类按钮 -->
       <el-row>
-        <el-col :span="2">
+        <el-col>
           <el-button type="primary" @click="showAddCateDialog">添加分类</el-button>
         </el-col>
       </el-row>

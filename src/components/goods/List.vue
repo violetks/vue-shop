@@ -28,16 +28,16 @@
         <el-table-column label="商品单价（元）" prop="goods_price" width="110px"></el-table-column>
         <el-table-column label="商品重量" prop="goods_weight" width="70px"></el-table-column>
         <el-table-column label="创建时间" prop="add_time" width="140px">
-          <template slot-scope="scope">{{scope.row.add_time | dataFormat}}</template>
+          <template slot-scope="scope">{{scope.row.add_time | dateFormat}}</template>
         </el-table-column>
         <el-table-column label="操作" width="130px">
           <template slot-scope="scope">
-            <el-button
+            <!-- <el-button
               size="mini"
               type="primary"
               icon="el-icon-edit"
               @click="showEditDrawer(scope.row.goods_id)"
-            ></el-button>
+            ></el-button>-->
             <el-button
               size="mini"
               type="danger"
@@ -61,7 +61,12 @@
       ></el-pagination>
     </el-card>
 
-    <el-drawer title="编辑商品" :visible.sync="editDrawer" direction="rtl">
+    <!-- <el-drawer
+      title="编辑商品"
+      :visible.sync="editDrawerVisible"
+      direction="rtl"
+      :append-to-body="true"
+    >
       <el-form
         ref="editFormRef"
         :model="editForm"
@@ -70,19 +75,20 @@
         class="edit_form"
       >
         <el-form-item label="商品名称" prop="goods_name">
-          <el-input v-model="editForm.goods_name"></el-input>
+          <el-input v-model="editForm.goods_name" class="input_width"></el-input>
         </el-form-item>
         <el-form-item label="商品单价" prop="goods_price">
-          <el-input v-model="editForm.goods_price"></el-input>
+          <el-input v-model="editForm.goods_price" class="input_width"></el-input>
         </el-form-item>
         <el-form-item label="商品数量" prop="goods_number">
-          <el-input v-model="editForm.goods_number"></el-input>
+          <el-input v-model="editForm.goods_number" class="input_width"></el-input>
         </el-form-item>
         <el-form-item label="商品重量" prop="goods_weight">
-          <el-input v-model="editForm.goods_weight"></el-input>
+          <el-input v-model="editForm.goods_weight" class="input_width"></el-input>
         </el-form-item>
         <el-form-item label="详细描述：" prop="goods_introduce">
           <el-input
+            class="input_width"
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 4}"
             placeholder="请输入内容"
@@ -90,16 +96,16 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="商品图片" prop="pics">
-          <div v-for="(item,index) in editForm.pics" :key="index">
-            <el-image style="width: 100px; height: 100px" :src="item" fit="fill"></el-image>
+          <div v-for="(item,index) in editForm.pics" :key="index" style="float:left">
+            <el-image style="width: 100px; height: 100px" :src="item.pics_sma_url" fit="fill"></el-image>
           </div>
         </el-form-item>
       </el-form>
       <div class="drawer_btns">
-        <el-button type="primary">确 定</el-button>
-        <el-button>取 消</el-button>
+        <el-button type="primary" @click="editGoods">确 定</el-button>
+        <el-button @click="editDrawerVisible = false">取 消</el-button>
       </div>
-    </el-drawer>
+    </el-drawer>-->
   </div>
 </template>
 
@@ -114,25 +120,24 @@ export default {
         pagesize: 10
       },
       goodslist: [], // 商品列表
-      total: 0,
-      editForm: {},
-      imgSrc: [], // 编辑图片
-      editDrawer: false,
-      // 修改表单的验证规则对象
-      editFormRules: {
-        goods_name: [
-          { required: true, message: '请输入商品名称', trigger: 'blur' }
-        ],
-        goods_price: [
-          { required: true, message: '请输入商品单价', trigger: 'blur' }
-        ],
-        goods_number: [
-          { required: true, message: '请输入商品数量', trigger: 'blur' }
-        ],
-        goods_weight: [
-          { required: true, message: '请输入商品重量', trigger: 'blur' }
-        ]
-      }
+      total: 0
+      // editForm: {},
+      // editDrawerVisible: false,
+      // // 修改表单的验证规则对象
+      // editFormRules: {
+      //   goods_name: [
+      //     { required: true, message: '请输入商品名称', trigger: 'blur' }
+      //   ],
+      //   goods_price: [
+      //     { required: true, message: '请输入商品单价', trigger: 'blur' }
+      //   ],
+      //   goods_number: [
+      //     { required: true, message: '请输入商品数量', trigger: 'blur' }
+      //   ],
+      //   goods_weight: [
+      //     { required: true, message: '请输入商品重量', trigger: 'blur' }
+      //   ]
+      // }
     }
   },
   created() {
@@ -185,26 +190,50 @@ export default {
     },
     goAddPage() {
       this.$router.push('/goods/add')
-    },
-    async showEditDrawer(id) {
-      const { data: res } = await this.$http.get('goods/' + id)
-      if (res.meta.status !== 200) {
-        return this.$message.error('查询商品信息失败！')
-      }
-      this.editForm = res.data
-      this.editForm.goods_introduce = this.editForm.goods_introduce.replace(
-        /<[^>]+>/g,
-        ''
-      )
-      console.log(this.editForm.pics)
-      this.editDrawer = true
     }
+    // async showEditDrawer(id) {
+    //   const { data: res } = await this.$http.get('goods/' + id)
+    //   if (res.meta.status !== 200) {
+    //     return this.$message.error('查询商品信息失败！')
+    //   }
+    //   this.editForm = res.data
+    //   this.editForm.goods_introduce = this.editForm.goods_introduce.replace(
+    //     /<[^>]+>/g,
+    //     ''
+    //   )
+    //   // console.log(this.editForm.pics)
+    //   this.editDrawerVisible = true
+    // },
+    // editGoods() {
+    //   this.$refs.editFormRef.validate(async valid => {
+    //     if (!valid) return
+    //     console.log(this.editForm)
+    //     const { data: res } = await this.$http.put(
+    //       'goods/' + this.editForm.goods_id,
+    //       {
+    //         goods_name: this.editForm.goods_name,
+    //         goods_price: this.editForm.goods_price,
+    //         goods_number: this.editForm.goods_number,
+    //         goods_weight: this.editForm.goods_weight,
+    //         // pics: this.editForm.pics,
+    //         attrs: this.editForm.attrs
+    //       }
+    //     )
+    //     if (res.meta.status !== 201) {
+    //       console.log(res)
+    //       return this.$message.error('更新商品信息失败！')
+    //     }
+    //     this.$message.success('更新商品信息成功！')
+    //     this.editDrawerVisible = false
+    //     this.getGoodsList()
+    //   })
+    // }
   }
 }
 </script>
 
 <style scoped>
-.edit_form {
+/* .edit_form {
   padding: 5px;
 }
 
@@ -212,4 +241,8 @@ export default {
   display: flex;
   justify-content: center;
 }
+
+.input_width {
+  width: 70%;
+} */
 </style>

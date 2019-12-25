@@ -26,7 +26,7 @@ Vue.config.productionTip = false
 
 Vue.use(VueQuillEditor) // 注册富文本编辑器为全局组件
 
-Vue.filter('dataFormat', function (originVal) {
+Vue.filter('dateFormat', function (originVal) {
   const dt = new Date(originVal)
 
   const y = dt.getFullYear()

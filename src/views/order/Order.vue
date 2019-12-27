@@ -11,8 +11,8 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-input placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getOrderList">
+            <el-button slot="append" icon="el-icon-search" @click="getOrderList"></el-button>
           </el-input>
         </el-col>
       </el-row>
@@ -117,12 +117,8 @@ export default {
         address2: ''
       },
       addressFormRules: {
-        address1: [
-          { required: true, message: '请选择省市区/县', trigger: 'blur' }
-        ],
-        address2: [
-          { required: true, message: '请填写详细地址', trigger: 'blur' }
-        ]
+        address1: [{ required: true, message: '请选择省市区/县', trigger: 'blur' }],
+        address2: [{ required: true, message: '请填写详细地址', trigger: 'blur' }]
       },
       cityData,
       progerssInfo: []
@@ -136,9 +132,7 @@ export default {
       const { data: res } = await this.$http.get('orders', {
         params: this.queryInfo
       })
-      if (res.meta.status !== 200) {
-        return this.$message.error('获取订单列表失败！')
-      }
+      if (res.meta.status !== 200) return this.$message.error('获取订单列表失败！')
       this.orderlist = res.data.goods
       this.total = res.data.total
     },
@@ -159,9 +153,7 @@ export default {
     },
     async showProgressBox() {
       const { data: res } = await this.$http.get('/kuaidi/1106975712662')
-      if (res.meta.status !== 200) {
-        return this.$message.error('获取物流进度失败！')
-      }
+      if (res.meta.status !== 200) return this.$message.error('获取物流进度失败！')
       this.progerssInfo = res.data
       this.progressVisible = true
     }

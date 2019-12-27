@@ -4,7 +4,7 @@
     <el-header>
       <div>
         <div class="avatar_box">
-          <img src="../assets/logo.png" alt />
+          <img src="../../assets/logo.png" />
         </div>
         <span>电商后台管理系统</span>
       </div>
@@ -14,7 +14,12 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside :width="isCollapse?'64px':'200px'">
-        <div class="toggle-button" @click="toggleCollapse">|||</div>
+        <el-tooltip content="我能伸能缩~~" placement="right">
+          <div class="toggle-button" @click="toggleCollapse">
+            <span v-if="isCollapse === false">|||</span>
+            <span v-else>--</span>
+          </div>
+        </el-tooltip>
         <el-menu
           router
           background-color="#079992"
@@ -82,8 +87,7 @@ export default {
     // 获取所有的菜单
     async getMenuList() {
       const { data: res } = await this.$http.get('/menus')
-      if (res.meta.status !== 200)
-        return this.$message.error('获取菜单列表失败！')
+      if (res.meta.status !== 200) return this.$message.error('获取菜单列表失败！')
       this.menulist = res.data
     },
     // 点击按钮，折叠侧边菜单栏

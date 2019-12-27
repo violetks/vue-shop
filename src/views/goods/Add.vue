@@ -129,21 +129,11 @@ export default {
         attrs: []
       },
       addFormRules: {
-        goods_name: [
-          { required: true, message: '请输入商品名称', trigger: 'blur' }
-        ],
-        goods_price: [
-          { required: true, message: '请输入商品价格', trigger: 'blur' }
-        ],
-        goods_weight: [
-          { required: true, message: '请输入商品重量', trigger: 'blur' }
-        ],
-        goods_number: [
-          { required: true, message: '请输入商品数量', trigger: 'blur' }
-        ],
-        goods_cat: [
-          { required: true, message: '请选择商品分类', trigger: 'blur' }
-        ]
+        goods_name: [{ required: true, message: '请输入商品名称', trigger: 'blur' }],
+        goods_price: [{ required: true, message: '请输入商品价格', trigger: 'blur' }],
+        goods_weight: [{ required: true, message: '请输入商品重量', trigger: 'blur' }],
+        goods_number: [{ required: true, message: '请输入商品数量', trigger: 'blur' }],
+        goods_cat: [{ required: true, message: '请选择商品分类', trigger: 'blur' }]
       },
       catelist: [], // 商品分类列表
       cateProps: {
@@ -170,8 +160,7 @@ export default {
     // 获取所有商品分类数据
     async getCateList() {
       const { data: res } = await this.$http.get('categories')
-      if (res.meta.status !== 200)
-        return this.$message.error('获取商品分类数据失败！')
+      if (res.meta.status !== 200) return this.$message.error('获取商品分类数据失败！')
       this.catelist = res.data
     },
     // 级联选择器选中项变化触发函数
@@ -189,26 +178,25 @@ export default {
     async tabClicked() {
       // 访问动态参数面板
       if (this.activeIndex === '1') {
-        const { data: res } = await this.$http.get(
-          `categories/${this.cateId}/attributes`,
-          { params: { sel: 'many' } }
-        )
-        if (res.meta.status !== 200)
-          return this.$message.error('获取动态参数列表失败！')
+        const { data: res } = await this.$http.get(`categories/${this.cateId}/attributes`, { params: { sel: 'many' } })
+        if (res.meta.status !== 200) return this.$message.error('获取动态参数列表失败！')
         res.data.forEach(item => {
-          item.attr_vals =
-            item.attr_vals.length === 0 ? [] : item.attr_vals.split(' ')
+          item.attr_vals = item.attr_vals.length === 0 ? [] : item.attr_vals.split(' ')
         })
         this.manyTableData = res.data
       } else if (this.activeIndex === '2') {
-        const { data: res } = await this.$http.get(
-          `categories/${this.cateId}/attributes`,
-          { params: { sel: 'only' } }
-        )
-        if (res.meta.status !== 200)
-          return this.$message.error('获取静态属性列表失败！')
+        const { data: res } = await this.$http.get(`categories/${this.cateId}/attributes`, { params: { sel: 'only' } })
+        if (res.meta.status !== 200) return this.$message.error('获取静态属性列表失败！')
         this.onlyTableData = res.data
       }
+    },
+    // 监听图片上传成功的事件
+    handleSuccess(response) {
+      console.log(response)
+      // 1.拼接得到一个图片信息对象
+      const picInfo = { pic: response.data.tmp_path }
+      // 2.将图片信息对象，push 到 pics 数组中
+      this.addForm.pics.push(picInfo)
     },
     // 处理图片预览效果
     handlePreview(file) {
@@ -224,14 +212,6 @@ export default {
       // 3. 调用数组的 splice 方法，把图片从数组中删除
       this.addForm.pics.splice(i, 1)
       // console.log(this.addForm)
-    },
-    // 监听图片上传成功的事件
-    handleSuccess(response) {
-      console.log(response)
-      // 1.拼接得到一个图片信息对象
-      const picInfo = { pic: response.data.tmp_path }
-      // 2.将图片信息对象，push 到 pics 数组中
-      this.addForm.pics.push(picInfo)
     },
     // 填写完成，添加商品
     addGoods() {
@@ -261,8 +241,7 @@ export default {
         // 发起请求，添加商品
         // 商品名称，必须是唯一的
         const { data: res } = await this.$http.post('goods', form)
-        if (res.meta.status !== 201)
-          return this.$message.error('添加商品失败！')
+        if (res.meta.status !== 201) return this.$message.error('添加商品失败！')
         this.$message.success('添加商品成功！')
         this.$router.push('/goods')
       })

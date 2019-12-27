@@ -23,7 +23,6 @@
         border
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       >
-        <!-- <el-table-column type="index"></el-table-column> -->
         <el-table-column label="分类名称" prop="cat_name"></el-table-column>
         <el-table-column label="是否有效">
           <template slot-scope="scope">
@@ -148,9 +147,7 @@ export default {
         cat_level: 0 // 分类等级，默认添加一级
       },
       addCateFormRules: {
-        cat_name: [
-          { required: true, message: '请输入分类名称', trigger: 'blur' }
-        ]
+        cat_name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }]
       },
       parentCateList: [], // 父级分类列表
       // 指定级联选择器的配置对象
@@ -174,10 +171,8 @@ export default {
       const { data: res } = await this.$http.get('categories', {
         params: this.queryInfo
       })
-      if (res.meta.status !== 200) {
-        return this.$message.error('获取商品分类失败！')
-      }
-      //   console.log(res.data)
+      if (res.meta.status !== 200) return this.$message.error('获取商品分类失败！')
+      //  console.log(res.data)
       this.catelist = res.data.result
       this.total = res.data.total
     },
@@ -192,31 +187,23 @@ export default {
       this.getCateList()
     },
     // 点击按钮，展示添加分类对话框
-    showAddCateDialog() {
+    async showAddCateDialog() {
       // 先获取父级分类列表
-      this.getParentCateList()
-      this.addCateDialogVisible = true
-    },
-    // 获取父级分类的数据列表
-    async getParentCateList() {
       const { data: res } = await this.$http.get('categories', {
         params: { type: 2 }
       })
-      if (res.meta.status !== 200) {
-        return this.$message.error('获取父级分类数据失败！')
-      }
+      if (res.meta.status !== 200) return this.$message.error('获取父级分类数据失败！')
       this.parentCateList = res.data
+      this.addCateDialogVisible = true
     },
     // 选择项发生变化触发这个函数
     parentCateChanged() {
-      console.log(this.selectedKeys)
+      // console.log(this.selectedKeys)
       // 如果 selectedKeys 数组中的 length 大于0，说明选中了父级分类
       // 反之，说明没有选中任何父级分类
       if (this.selectedKeys.length > 0) {
         // 父级分类的id
-        this.addCateForm.cat_pid = this.selectedKeys[
-          this.selectedKeys.length - 1
-        ]
+        this.addCateForm.cat_pid = this.selectedKeys[this.selectedKeys.length - 1]
         this.addCateForm.cat_level = this.selectedKeys.length // 当前分类等级
         return
       } else {
@@ -226,16 +213,10 @@ export default {
     },
     // 点击按钮，添加新的分类
     addCate() {
-      //   console.log(this.addCateForm)
       this.$refs.addCateFormRef.validate(async valid => {
         if (!valid) return
-        const { data: res } = await this.$http.post(
-          'categories',
-          this.addCateForm
-        )
-        if (res.meta.status !== 201) {
-          return this.$message.error('添加分类失败！')
-        }
+        const { data: res } = await this.$http.post('categories', this.addCateForm)
+        if (res.meta.status !== 201) return this.$message.error('添加分类失败！')
         this.$message.success('添加分类成功！')
         this.getCateList()
         this.addCateDialogVisible = false
@@ -251,38 +232,26 @@ export default {
     async showEditCateDialog(id) {
       // 根据id查询分类
       const { data: res } = await this.$http.get('categories/' + id)
-      if (res.meta.status !== 200) {
-        return this.$message.error('查询分类信息失败！')
-      }
-      console.log(res.data)
+      if (res.meta.status !== 200) return this.$message.error('查询分类信息失败！')
       this.editCateForm = res.data
       this.editCateDialogVisible = true
     },
     editCate() {
       this.$refs.editCateFormRef.validate(async valid => {
         if (!valid) return
-        const { data: res } = await this.$http.put(
-          'categories/' + this.editCateForm.cat_id,
-          { cat_name: this.editCateForm.cat_name }
-        )
-        if (res.meta.status !== 200) {
-          return this.$message.error('更新分类信息失败！')
-        }
+        const { data: res } = await this.$http.put('categories/' + this.editCateForm.cat_id, { cat_name: this.editCateForm.cat_name })
+        if (res.meta.status !== 200) return this.$message.error('更新分类信息失败！')
         this.$message.success(res.meta.msg)
         this.getCateList()
         this.editCateDialogVisible = false
       })
     },
     async removeCateById(id) {
-      const confirmResult = await this.$confirm(
-        '此操作将永久删除该分类，是否继续？',
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).catch(err => err)
+      const confirmResult = await this.$confirm('此操作将永久删除该分类，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(err => err)
       if (confirmResult !== 'confirm') {
         return this.$message.info('取消了删除！')
       }

@@ -8,5 +8,5 @@ module.exports = {
   presets: [
     '@vue/cli-plugin-babel/preset'
   ],
-  plugins: [...prodPlugins]
+  plugins: [...prodPlugins, '@babel/plugin-syntax-dynamic-import']
 }

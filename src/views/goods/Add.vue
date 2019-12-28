@@ -192,7 +192,7 @@ export default {
     },
     // 监听图片上传成功的事件
     handleSuccess(response) {
-      console.log(response)
+      // console.log(response)
       // 1.拼接得到一个图片信息对象
       const picInfo = { pic: response.data.tmp_path }
       // 2.将图片信息对象，push 到 pics 数组中

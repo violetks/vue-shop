@@ -11,7 +11,12 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getOrderList">
+          <el-input
+            placeholder="未开发，搜不到的"
+            v-model="queryInfo.query"
+            clearable
+            @clear="getOrderList"
+          >
             <el-button slot="append" icon="el-icon-search" @click="getOrderList"></el-button>
           </el-input>
         </el-col>
@@ -33,7 +38,7 @@
           <template slot-scope="scope">{{scope.row.create_time | dateFormat}}</template>
         </el-table-column>
         <el-table-column align="center" label="操作">
-          <template>
+          <template slot-scope="scope">
             <el-button round size="mini" type="primary" icon="el-icon-edit" @click="showBox"></el-button>
             <el-tooltip content="查看物流进度" placement="top">
               <el-button
@@ -41,7 +46,7 @@
                 size="mini"
                 type="success"
                 icon="el-icon-location"
-                @click="showProgressBox"
+                @click="showProgressBox(scope.row.order_number)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -151,8 +156,8 @@ export default {
     addressDialogClosed() {
       this.$refs.addressFormRef.resetFields()
     },
-    async showProgressBox() {
-      const { data: res } = await this.$http.get('/kuaidi/1106975712662')
+    async showProgressBox(number) {
+      const { data: res } = await this.$http.get(`kuaidi/${number}`)
       if (res.meta.status !== 200) return this.$message.error('获取物流进度失败！')
       this.progerssInfo = res.data
       this.progressVisible = true
